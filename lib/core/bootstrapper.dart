@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:minimal/modules/login/viewmodels/login_view_model.dart';
+
 import 'flavor.dart';
 
 enum InitializationStatus {
@@ -26,6 +28,8 @@ abstract class Bootstrapper {
     return result;
   }
 
+  LoginViewModel get loginViewModel;
+
   Stream<InitializationStatus> get initializationStream;
 
   Future<void> bootstrap();
@@ -41,13 +45,21 @@ class _DefaultBootstrapper implements Bootstrapper {
   final StreamController<InitializationStatus> _initializationStreamController =
       StreamController<InitializationStatus>.broadcast();
 
+  late LoginViewModel _loginViewModel;
+
+  @override
+  LoginViewModel get loginViewModel => _loginViewModel;
+
+  Future<void> _initializeViewModels() async {
+    _loginViewModel = LoginViewModel();
+  }
+
   @override
   Future<void> bootstrap() async {
     if (_initializationStatus != InitializationStatus.initialized) {
       try {
         log('Starting bootstrap process...');
-        //  await _initializeConfig();
-        // await _initializeViewModels();
+        await _initializeViewModels();
         _initializationStatus = InitializationStatus.initialized;
         log('Bootstrap process completed successfully.');
       } catch (e) {

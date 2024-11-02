@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +22,9 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    widget.bootstrapper.bootstrap();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.bootstrapper.bootstrap();
+    });
   }
 
   @override
@@ -30,10 +34,14 @@ class _AppState extends State<App> {
       stream: widget.bootstrapper.initializationStream,
       builder: (_, snapshot) {
         Widget result;
+        log("Result of bootstraping ${snapshot.data}");
         switch (snapshot.data) {
           case InitializationStatus.initialized:
             result = MultiProvider(
-              providers: const [],
+              providers: [
+                ChangeNotifierProvider(
+                    create: (_) => widget.bootstrapper.loginViewModel),
+              ],
               child: const MaterialApp(
                 home: LoginPagePage(),
               ),
@@ -54,9 +62,7 @@ class _AppState extends State<App> {
           case null:
             result = const SizedBox.shrink();
         }
-        return MaterialApp(
-          home: result,
-        );
+        return result;
       },
     );
   }
