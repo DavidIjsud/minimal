@@ -1,0 +1,8 @@
+{
+
+    "loginEndPoint" : "https://myback-execute-dot-my-back-401316.uc.r.appspot.com/6-tots-test/oauth/token",
+    "getClientsEndPoint" :"https://myback-execute-dot-my-back-401316.uc.r.appspot.com/6-tots-test/clients",
+    "addClientEndPoint" : "https://myback-execute-dot-my-back-401316.uc.r.appspot.com/6-tots-test/clients",
+    "editClientEndPoint" : "https://myback-execute-dot-my-back-401316.uc.r.appspot.com/6-tots-test/clients/{clientId}",
+    "removeClientEndPoint" : "https://myback-execute-dot-my-back-401316.uc.r.appspot.com/6-tots-test/clients/{clientId}"
+}

@@ -14,4 +14,5 @@ abstract class Images {
       'assets/images/background_clients_bottom_right.png';
   static String get professionalPicture =>
       'assets/images/professional_picture.jpg';
+  static String get pictureImage => 'assets/images/picture_image.png';
 }

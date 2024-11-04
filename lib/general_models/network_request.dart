@@ -3,7 +3,7 @@ abstract class NetworkRequest {
 
   final String url;
 
-  String? get body;
+  String? get body => null;
 
   Map<String, String>? get headers => {
         'Accept': 'application/json',

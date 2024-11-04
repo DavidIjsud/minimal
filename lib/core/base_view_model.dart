@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class BaseViewModel<T> extends ChangeNotifier {
@@ -21,6 +23,7 @@ class BaseViewModel<T> extends ChangeNotifier {
   }) {
     _state = state;
     _description = description;
+
     notifyListeners();
   }
 
@@ -33,7 +36,10 @@ class BaseViewModel<T> extends ChangeNotifier {
   @override
   void notifyListeners() {
     if (!_disposed) {
+      log('notifyListeners() called in $state');
       super.notifyListeners();
+    } else {
+      log('notifyListeners() called in $state but already disposed');
     }
   }
 }

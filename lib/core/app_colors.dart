@@ -10,4 +10,5 @@ abstract class AppColors {
   static const Color minimalBlack = Color(0xFF161B14);
   static const Color minimalBlack2 = Color(0xFF0D0D0D);
   static const Color minimalGray2 = Color(0xFF434545);
+  static const Color minimalYellow = Color(0xFFE4F353);
 }

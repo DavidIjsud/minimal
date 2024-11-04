@@ -1,14 +1,38 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:minimal/core/app_colors.dart';
+import 'package:minimal/general_widgets/modals.dart';
 import 'package:minimal/general_widgets/primary_button.dart';
+import 'package:minimal/modules/clients/viewmodels/clients_viewmodel.dart';
 import 'package:minimal/modules/clients/widgets/client_item.dart';
+import 'package:minimal/modules/clients/widgets/modal_add_client.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/images.dart';
 import '../widgets/search_client_field.dart';
 
-class ClientPage extends StatelessWidget {
+class ClientPage extends StatefulWidget {
   const ClientPage({super.key});
+
+  @override
+  State<ClientPage> createState() => _ClientPageState();
+}
+
+class _ClientPageState extends State<ClientPage> {
+  late ClientsViewModel _clientsViewModel;
+
+  @override
+  void initState() {
+    super.initState();
+    _clientsViewModel = context.read<ClientsViewModel>();
+    _clientsViewModel.initViewModel();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _clientsViewModel.getClients();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,14 +103,21 @@ class ClientPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(
-                      height: 30.0,
+                      height: 20.0,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SearchClientField(),
                         PrimaryButton(
-                          onTap: () {},
+                          onTap: () {
+                            Modals.openModal(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) {
+                                  return ModalAddClient();
+                                });
+                          },
                           width: 93,
                           height: 29,
                           text: 'ADD NEW',
@@ -94,14 +125,50 @@ class ClientPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(
-                      height: 40.0,
+                      height: 20.0,
                     ),
-                    const ClientItem(),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.55,
+                      width: MediaQuery.of(context).size.width,
+                      child: Consumer<ClientsViewModel>(
+                          builder: (_, clientsViewModel, Widget? w) {
+                        if (clientsViewModel.state?.areClientsLoaded == true) {
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount:
+                                  clientsViewModel.state!.amountOfClientsToShow,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 15.0),
+                                  child: ClientItem(
+                                    client: _clientsViewModel
+                                        .state!.clients![index],
+                                  ),
+                                );
+                              });
+                        }
+
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.blackPrimary,
+                          ),
+                        );
+                      }),
+                    ),
                     Expanded(child: Container()),
-                    PrimaryButton(
-                      onTap: () {},
-                      text: 'LOAD MORE',
-                    ),
+                    Consumer<ClientsViewModel>(
+                        builder: (_, clientsViewModel, Widget? w) {
+                      return PrimaryButton(
+                        onTap: clientsViewModel.state?.isLoadingClients == true
+                            ? null
+                            : () {
+                                clientsViewModel.loadNextFivesClients();
+                              },
+                        isLoading:
+                            clientsViewModel.state?.isLoadingClients ?? false,
+                        text: 'LOAD MORE',
+                      );
+                    }),
                     const SizedBox(
                       height: 20.0,
                     ),

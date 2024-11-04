@@ -12,3 +12,17 @@ class FlavorConfig {
 
   static Flavor get currentFlavor => _instance!.flavor;
 }
+
+extension FlavorExtension on Flavor {
+  static const deConfigFile = 'assets/config/dev_config.json';
+  static const prodConfigFile = 'assets/config/prod_config.json';
+
+  String get configFile {
+    switch (this) {
+      case Flavor.dev:
+        return deConfigFile;
+      case Flavor.prod:
+        return prodConfigFile;
+    }
+  }
+}
